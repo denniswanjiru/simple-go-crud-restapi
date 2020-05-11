@@ -33,6 +33,7 @@ func mockBooks() {
 
 // GetBooks fetches all the books from the local store
 func GetBooks(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	mockBooks()
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(books)
@@ -40,6 +41,7 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 
 // GetBook fetches single book from the local store
 func GetBook(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	mockBooks()
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
@@ -54,6 +56,7 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 
 // CreateBook creates a new book to the local store
 func CreateBook(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	w.Header().Set("Content-Type", "application/json")
 	book := Book{ID: "test"}
 
@@ -69,6 +72,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 
 // UpdateBook updates a book in the local store
 func UpdateBook(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
@@ -95,6 +99,7 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 // DeleteBook removes a book from the local store
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
@@ -110,23 +115,4 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 
 	books = newSetOfBooks
 	json.NewEncoder(w).Encode(books)
-}
-
-func getBookOr404(id string, w http.ResponseWriter, r *http.Request) *Book {
-	var book *Book
-	fmt.Println(book)
-
-	for i, v := range books {
-		fmt.Println(i, v, book)
-		if book != nil {
-			return book
-		}
-
-		if id == v.ID {
-			println("Match", i)
-			book = &v
-		}
-	}
-
-	return book
 }
