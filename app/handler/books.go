@@ -64,21 +64,52 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	books = append(books, book)
+	json.NewEncoder(w).Encode(books)
 }
 
 // UpdateBook updates a book in the local store
 func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	// params := mux.Vars(r)
 
+	params := mux.Vars(r)
+
+	newSetOfBooks := books[:0]
+
+	for _, book := range books {
+		if book.ID == params["id"] {
+			book := Book{ID: params["id"]}
+
+			if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
+				panic(err)
+			}
+
+			newSetOfBooks = append(newSetOfBooks, book)
+		} else {
+			newSetOfBooks = append(newSetOfBooks, book)
+		}
+	}
+
+	books = newSetOfBooks
+	json.NewEncoder(w).Encode(books)
 }
 
 // DeleteBook removes a book from the local store
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	newSetOfBook := []Book{}
+	params := mux.Vars(r)
+	newSetOfBooks := books[:0]
 
+	for _, book := range books {
+		if book.ID != params["id"] {
+			newSetOfBooks = append(newSetOfBooks, book)
+		}
+	}
+
+	fmt.Println(newSetOfBooks)
+
+	books = newSetOfBooks
+	json.NewEncoder(w).Encode(books)
 }
 
 func getBookOr404(id string, w http.ResponseWriter, r *http.Request) *Book {
