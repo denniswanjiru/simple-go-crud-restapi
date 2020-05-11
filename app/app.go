@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/denniswanjiru/restapi/app/handler"
+	"github.com/denniswanjiru/simple-go-crud-restapi/app/handler"
 	"github.com/gorilla/mux"
 )
 

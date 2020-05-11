@@ -1,6 +1,6 @@
 package main
 
-import "github.com/denniswanjiru/restapi/app"
+import "github.com/denniswanjiru/simple-go-crud-restapi/app"
 
 func main() {
 	app := &app.App{}
