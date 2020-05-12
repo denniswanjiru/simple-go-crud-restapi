@@ -59,6 +59,7 @@ func (a *App) handleRequest(h RequestHandlerFunction) http.HandlerFunc {
 
 // Run spins up a basic server
 func (a *App) Run(port string) {
+	handler.MockBooks()
 	fmt.Printf("server running on port, %s \n", port)
 	log.Fatal(http.ListenAndServe(port, a.Router))
 }

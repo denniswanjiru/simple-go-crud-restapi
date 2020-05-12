@@ -17,7 +17,8 @@ type Book struct {
 
 var books []Book
 
-func mockBooks() {
+// MockBooks creates mock data
+func MockBooks() {
 	books = append(books, Book{
 		ID:    "sw",
 		Title: "Wait for me Angela",
@@ -34,7 +35,6 @@ func mockBooks() {
 // GetBooks fetches all the books from the local store
 func GetBooks(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	mockBooks()
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(books)
 }
@@ -42,7 +42,6 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 // GetBook fetches single book from the local store
 func GetBook(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	mockBooks()
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
@@ -76,7 +75,6 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
-
 	newSetOfBooks := books[:0]
 
 	for _, book := range books {
@@ -110,8 +108,6 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 			newSetOfBooks = append(newSetOfBooks, book)
 		}
 	}
-
-	fmt.Println(newSetOfBooks)
 
 	books = newSetOfBooks
 	json.NewEncoder(w).Encode(books)
