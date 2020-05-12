@@ -45,12 +45,15 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
-	for _, book := range books {
-		if book.ID == params["id"] {
-			json.NewEncoder(w).Encode(book)
-			return
-		}
+	book, err := findOrFail(params["id"])
+
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Printf("%s \n", err)
+		return
 	}
+
+	json.NewEncoder(w).Encode(book)
 }
 
 // CreateBook creates a new book to the local store
@@ -60,12 +63,13 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	book := Book{ID: "test"}
 
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
-		fmt.Println(err)
-
-		panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Printf("%s \n", err)
+		return
 	}
 
 	books = append(books, book)
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(books)
 }
 
@@ -76,6 +80,12 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	newSetOfBooks := books[:0]
+
+	if _, err := findOrFail(params["id"]); err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Printf("%s \n", err)
+		return
+	}
 
 	for _, book := range books {
 		if book.ID == params["id"] {
@@ -103,6 +113,12 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	newSetOfBooks := books[:0]
 
+	if _, err := findOrFail(params["id"]); err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Printf("%s \n", err)
+		return
+	}
+
 	for _, book := range books {
 		if book.ID != params["id"] {
 			newSetOfBooks = append(newSetOfBooks, book)
@@ -111,4 +127,18 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 
 	books = newSetOfBooks
 	json.NewEncoder(w).Encode(books)
+}
+
+func findOrFail(id string) (book Book, err error) {
+	for _, b := range books {
+		if b.ID == id {
+			book = b
+		}
+	}
+
+	if book.ID == "" {
+		err = fmt.Errorf("Book Not Found")
+	}
+
+	return book, err
 }
