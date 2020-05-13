@@ -132,13 +132,13 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 func findOrFail(id string) (book Book, err error) {
 	for _, b := range books {
 		if b.ID == id {
-			book = b
+			return b, err
 		}
 	}
 
 	if book.ID == "" {
-		err = fmt.Errorf("Book Not Found")
+		return book, fmt.Errorf("Book Not Found")
 	}
 
-	return book, err
+	return
 }
