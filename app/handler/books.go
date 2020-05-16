@@ -48,7 +48,6 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 	book, err := findOrFail(params["id"])
 
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
 		http.Error(w, err.Error(), 404)
 		return
 	}
@@ -82,7 +81,6 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	newSetOfBooks := books[:0]
 
 	if _, err := findOrFail(params["id"]); err != nil {
-		w.WriteHeader(http.StatusNotFound)
 		http.Error(w, err.Error(), 404)
 		return
 	}
@@ -114,7 +112,6 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	newSetOfBooks := books[:0]
 
 	if _, err := findOrFail(params["id"]); err != nil {
-		w.WriteHeader(http.StatusNotFound)
 		http.Error(w, err.Error(), 404)
 		return
 	}
