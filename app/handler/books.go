@@ -49,7 +49,7 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
-		fmt.Printf("%s \n", err)
+		http.Error(w, err.Error(), 404)
 		return
 	}
 
@@ -64,7 +64,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Printf("%s \n", err)
+		http.Error(w, err.Error(), 404)
 		return
 	}
 
@@ -83,7 +83,7 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := findOrFail(params["id"]); err != nil {
 		w.WriteHeader(http.StatusNotFound)
-		fmt.Printf("%s \n", err)
+		http.Error(w, err.Error(), 404)
 		return
 	}
 
@@ -115,7 +115,7 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 
 	if _, err := findOrFail(params["id"]); err != nil {
 		w.WriteHeader(http.StatusNotFound)
-		fmt.Printf("%s \n", err)
+		http.Error(w, err.Error(), 404)
 		return
 	}
 
