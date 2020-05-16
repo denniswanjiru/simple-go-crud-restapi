@@ -53,7 +53,7 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(book)
+	json.NewEncoder(w).Encode(*book)
 }
 
 // CreateBook creates a new book to the local store
@@ -129,16 +129,18 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(books)
 }
 
-func findOrFail(id string) (book Book, err error) {
+func findOrFail(id string) (*Book, error) {
+	var book *Book
 	for _, b := range books {
 		if b.ID == id {
-			return b, err
+			book = &b
+			return &b, nil
 		}
 	}
 
-	if book.ID == "" {
-		return book, fmt.Errorf("Book Not Found")
+	if book == nil {
+		return nil, fmt.Errorf("Book Not Found")
 	}
 
-	return
+	return &Book{}, nil
 }
