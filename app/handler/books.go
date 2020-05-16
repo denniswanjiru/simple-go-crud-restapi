@@ -62,8 +62,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	book := Book{ID: "test"}
 
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		http.Error(w, err.Error(), 404)
+		http.Error(w, err.Error(), 500)
 		return
 	}
 
